@@ -14,5 +14,7 @@ elif cmd_args.ast_fmt == 'shift_node':
 elif cmd_args.ast_fmt == 'min_node':
     from gtrans.data_process.ast_utils import build_min_node_ast as build_ast
     from gtrans.data_process.min_interpreter import MinNodeGraphEditParser as GraphEditParser
-
+elif cmd_args.ast_fmt == 'javaparser':
+    from gtrans.data_process.ast_utils import build_java_ast as build_ast
+    from gtrans.data_process.java_interpreter import JavaGraphEditParser as GraphEditParser
 

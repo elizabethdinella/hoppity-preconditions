@@ -12,7 +12,7 @@ from tqdm import tqdm
 from collections import defaultdict, Counter
 from gtrans.data_process import build_ast
 from gtrans.common.consts import SEPARATOR, ADDITIONAL_NODES, shift_node_types
-from gtrans.common.consts import OP_ADD_NODE, OP_DEL_NODE, OP_REPLACE_TYPE, OP_REPLACE_VAL, OP_NONE
+from gtrans.common.consts import OP_ADD_NPE, OP_DEL_NODE, OP_NONE, OP_ADD_RET
 from gtrans.common.code_graph import CodeGraph
 from gtrans.graphnet.s2v_lib import Code2InvGraph, MergedGraph, MultiGraph
 from gtrans.data_process.utils import code_group_generator, get_bug_prefix, clean_unknown
@@ -22,14 +22,23 @@ class GraphEditCmd(object):
     def __init__(self, cmd_txt):
         cmds = cmd_txt.split(SEPARATOR)
         self.op = cmds[0]
-        if self.op == OP_REPLACE_TYPE:
-            #assert len(cmds) == 3
-            self.node_index = cmds[1]
-            self.node_index = int(self.node_index)
+        if self.op == OP_ADD_RET:
+            assert len(cmds) == 4
+            self.parent_id, self.child_rank = cmds[1:3]
 
-            self.node_type = cmds[2:]
-            if isinstance(self.node_type, list):
-                self.node_type = SEPARATOR.join(self.node_type)
+            self.parent_id = int(self.parent_id)
+            self.child_rank = int(self.child_rank)
+            self.children = []
+            self.expr = cmds[3]
+
+        elif self.op == OP_ADD_NPE:
+            assert len(cmds) == 4
+            self.parent_id, self.child_rank = cmds[1:3]
+
+            self.parent_id = int(self.parent_id)
+            self.child_rank = int(self.child_rank)
+            self.children = []
+            self.expr = cmds[3]
 
         elif self.op == OP_ADD_NODE:
             assert len(cmds) >= 5
@@ -63,9 +72,12 @@ class GraphEditCmd(object):
 
             #self.node_index = self.parent_id
         elif self.op == OP_REPLACE_VAL:
+            raise NotImplementedException
+            '''
             self.node_index, self.node_name = cmds[1:]
             self.node_index = int(self.node_index)
             self.clean_name = self.node_name
+            '''
         elif self.op == OP_DEL_NODE:
             assert len(cmds) == 2
             self.node_index = int(cmds[1])

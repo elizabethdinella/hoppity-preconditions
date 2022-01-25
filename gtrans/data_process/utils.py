@@ -3,7 +3,7 @@ from __future__ import absolute_import
 from __future__ import division
 from gtrans.common.configs import cmd_args
 from gtrans.common.consts import HOPPITY_HOME
-from gtrans.data_process.ast_utils import build_shift_node_ast as build_ast
+from gtrans.data_process.ast_utils import build_java_ast as build_ast
 
 from tqdm import tqdm
 import json
@@ -27,7 +27,7 @@ def get_bug_prefix(buggy_file):
     fname = buggy_file.split('/')[-1]
     return '_'.join(fname.split('_')[:-1])
 
-def code_group_generator(data_root, file_suffix=['_buggy.json', '_buggy.js', '_fixed.json', '_ast_diff.txt']):
+def code_group_generator(data_root, file_suffix=['.json', '_ast_diff.txt']):
     files = os.listdir(data_root)
 
     for fname in files:
@@ -36,15 +36,15 @@ def code_group_generator(data_root, file_suffix=['_buggy.json', '_buggy.js', '_f
         if os.path.isdir(abs_path):
             for t in code_group_generator(abs_path, file_suffix):
                 yield t
-        elif fname.endswith(file_suffix[0]):
-            prefix = fname.split(file_suffix[0])[0]
+        elif fname.endswith(file_suffix[0]) and "Sample" in fname:
+            num = os.path.basename(fname).replace("Sample","")
             local_names = []
-            for suff in file_suffix:
-                if suff == "_buggy.js":
-                    my_prefix = prefix.replace("SHIFT_", "")
-                else:
-                    my_prefix = prefix
-                local_names.append(os.path.join(data_root, my_prefix + suff))
+
+            fname = os.path.join(data_root, fname)
+            local_names.append(fname)
+            local_names.append(fname.replace("Sample", "Label"))
+            local_names.append(fname.replace(".json", ".json_ast_diff.txt"))
+
             yield tuple(local_names)
 
 def get_ref_edges(src_file, pkl_file):
@@ -79,6 +79,7 @@ def get_source(sample_name, buggy=True):
         b_src1 = os.path.join(raw_src, sample_name.replace("_SHIFT","") + suffix + ".js")
         b_src2 = os.path.join(raw_src, sample_name.replace("_SHIFT","") + babel_suffix)
         b_src3 = os.path.join(raw_src, sample_name + suffix + ".js")
+
 
         if not os.path.exists(b_src1) and not os.path.exists(b_src2) and not os.path.exists(b_src3):
             continue

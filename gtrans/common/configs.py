@@ -25,7 +25,7 @@ cmd_opt.add_argument('-op_given', default=False, type=eval, help='op given durin
 
 cmd_opt.add_argument('-max_ast_nodes', default=500, type=int, help='max # nodes in ast')
 
-cmd_opt.add_argument('-ast_fmt', default='shift_node', help='ast format', choices=['gumtree', 'shift_node', 'shift_edge', 'min_node'])
+cmd_opt.add_argument('-ast_fmt', default='shift_node', help='ast format', choices=['gumtree', 'shift_node', 'shift_edge', 'min_node', 'javaparser'])
 cmd_opt.add_argument('-neg_samples', default=1, type=int, help='# negative sampling')
 cmd_opt.add_argument('-rnn_layers', default=2, type=int, help='# rnn layers')
 cmd_opt.add_argument('-max_token_len', default=100, type=int, help='max len of name')

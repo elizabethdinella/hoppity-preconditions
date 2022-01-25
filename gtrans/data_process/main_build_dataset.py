@@ -13,7 +13,7 @@ import torch
 from tqdm import tqdm
 from gtrans.common.configs import cmd_args
 from gtrans.common.dataset import GraphEditCmd
-from gtrans.common.consts import js_keywords, OP_REPLACE_VAL, OP_ADD_NODE, MAX_VOCAB_SIZE
+from gtrans.common.consts import js_keywords, MAX_VOCAB_SIZE
 from gtrans.data_process import build_ast, GraphEditParser
 from gtrans.data_process.utils import code_group_generator, get_bug_prefix, get_ref_edges
 
@@ -22,9 +22,10 @@ def make_graph_edits(file_tuple):
     vocab = {}
 
     if any([not os.path.isfile(f) for f in file_tuple]):
+        print(file_tuple)
         return file_tuple, (None, None), None, ('buggy/fixed/ast_diff file missing', None), vocab 
 
-    f_bug, f_bug_src, f_fixed, f_diff = file_tuple
+    f_bug, f_fixed, f_diff = file_tuple
 
     sample_name = get_bug_prefix(f_bug)
 
@@ -48,7 +49,8 @@ def make_graph_edits(file_tuple):
     with open(fixed_pkl, 'wb') as f:
         cp.dump(ast_fixed, f)
 
-    buggy_refs = get_ref_edges(f_bug_src, buggy_pkl)
+    #buggy_refs = get_ref_edges(f_bug_src, buggy_pkl)
+    buggy_refs = []
 
     return file_tuple, (ast_bug, ast_fixed), buggy_refs, gp.parse_edits(), vocab
 
@@ -92,7 +94,10 @@ if __name__ == '__main__':
 
     values = []
     for file_tuple, (ast_bug, ast_fixed), ref_edges, (error_log, edits), vocab in pbar:
-        buggy_file, buggy_src, fixed_file, diff_file = file_tuple
+        if error_log:
+            print(file_tuple)
+            print(error_log)
+        buggy_file, fixed_file, diff_file = file_tuple
 
         with open("processed.txt", "a") as f:
             f.write(buggy_file + "\n")

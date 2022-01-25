@@ -75,10 +75,11 @@ CONTENT_NODE_TYPE = 'CONTENT_NODE'
 ADDITIONAL_NODES = [CONTENT_NODE_TYPE]
 
 OP_NONE = 'NoOp'
-OP_ADD_NODE = 'add_node'
+OP_ADD_NPE = 'add_npe'
 OP_DEL_NODE = 'del_node'
-OP_REPLACE_VAL = 'replace_val'
-OP_REPLACE_TYPE = 'replace_type'
+OP_ADD_RET = 'add_re'
+#OP_REPLACE_VAL = 'replace_val'
+#OP_REPLACE_TYPE = 'replace_type'
 
 
 js_keywords = ['break', 'case', 'catch', 'continue', 'debugger', 'default', 'delete', 'do', 'else', 'finally', 'for', 'function', 'if', 'in', 'instanceof', 'new', 'return', 'switch', 'this', 'throw', 'try', 'typeof', 'var', 'void', 'while', 'with', 'class', 'const', 'enum', 'export', 'extends', 'import', 'super', 'implements', 'interface', 'let', 'package', 'private', 'protected', 'public', 'static', 'yield']
